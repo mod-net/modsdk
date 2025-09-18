@@ -136,7 +136,8 @@ celerybeat.pid
 
 # Environments
 .env
-.envrc
+# Keep .envrc tracked for direnv + flakes
+!.envrc
 .venv
 env/
 venv/
@@ -186,13 +187,20 @@ cython_debug/
 #  that can be found at https://github.com/github/gitignore/blob/main/Global/VisualStudioCode.gitignore
 #  and can be added to the global gitignore or merged into this file. However, if you prefer, 
 #  you could uncomment the following to ignore the entire vscode folder
-# .vscode/
+.vscode/
 
 # Ruff stuff:
 .ruff_cache/
 
 # PyPI configuration file
 .pypirc
+
+# direnv
+.direnv/
+
+# Nix build symlinks
+result
+result-*
 
 # Cursor
 #  Cursor is an AI-powered code editor. `.cursorignore` specifies files/directories to
@@ -205,3 +213,74 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+## --- Rust ---
+# Cargo build output
+target/
+
+# Rust tooling
+*.rlib
+*.rmeta
+*.dSYM/
+*.pdb
+*.dll
+*.exe
+
+# Note: do NOT ignore Cargo.lock globally; subrepos manage their own lockfiles.
+
+## --- TypeScript / Node / Web ---
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+.next/
+.nuxt/
+.vercel/
+.svelte-kit/
+.parcel-cache/
+.cache/
+coverage/
+
+# TS incremental build info
+*.tsbuildinfo
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Env (top-level already ignores .env and .envrc)
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Tooling
+.turbo/
+.eslintcache
+.stylelintcache
+
+## --- Solidity / Foundry / Hardhat (bridge) ---
+out/
+cache/
+broadcast/
+artifacts/
+.#openzeppelin/
+
+# TypeChain outputs
+typechain/
+typechain-types/
+
+# Node lockfiles (monorepo policy: manage per-repo; ignore at umbrella)
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# OS junk
+.DS_Store
+Thumbs.db
+
