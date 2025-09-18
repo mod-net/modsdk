@@ -15,6 +15,7 @@ RUN apt-get update \
         ca-certificates \
         curl \
         xz-utils \
+        bash \
         git \
         build-essential \
         pkg-config \
@@ -25,17 +26,21 @@ RUN apt-get update \
         sudo \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Nix (single-user) for root in container
-# Note: we intentionally use non-daemon mode in containers
-RUN sh -c "\
-    set -eux; \
-    curl -L https://nixos.org/nix/install -o /tmp/nix-install.sh; \
-    sh /tmp/nix-install.sh --no-daemon; \
-    echo '. /root/.nix-profile/etc/profile.d/nix.sh' >> /etc/profile; \
-    echo '. /root/.nix-profile/etc/profile.d/nix.sh' >> /root/.bashrc; \
-    . /root/.nix-profile/etc/profile.d/nix.sh; \
-    nix --version \
-  "
+ENV USER=root
+ENV NIX_INSTALLER_NO_MODIFY_PROFILE=1
+
+# Install Nix (single-user) using Determinate Systems installer (robust in containers)
+RUN set -eux; \
+    curl -fsSL https://install.determinate.systems/nix -o /tmp/nix-installer.sh; \
+    sh /tmp/nix-installer.sh install --no-confirm; \
+    rm -f /tmp/nix-installer.sh
+
+# Ensure nix is on PATH for both login and non-login shells
+ENV PATH=/root/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ENV NIX_CONFIG=experimental-features\ =\ nix-command\ flakes
+SHELL ["/bin/bash", "-lc"]
+
+RUN nix --version || (echo "nix not found on PATH" && exit 1)
 
 # Optional: Node 20 + pnpm preinstall to speed up JS tasks if needed outside Nix
 # You can rely solely on Nix if preferred; keeping these for convenience
@@ -45,11 +50,6 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && npm i -g pnpm \
     && rm -rf /var/lib/apt/lists/*
 
-# Set default shell to bash and ensure nix is in PATH for RUN and container sessions
-SHELL ["/bin/bash", "-lc"]
-ENV PATH=/root/.nix-profile/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-
-# Warm up nix by showing version (already done) and creating a minimal store path
-RUN nix --version && true
+# Warm up nix by querying version (already done above)
 
 WORKDIR /workspace

@@ -1,0 +1,29 @@
+# Configuration for setting up a GitHub self-hosted runner
+# Copy to scripts/runner/runner.conf and edit values
+
+# GitHub org/repo URL (required)
+GITHUB_REPO_URL="https://github.com/mod-net/modsdk"
+
+# Runner name (defaults to hostname if empty)
+RUNNER_NAME="modsdk-runner-1"
+
+# Labels (comma-separated). The CI expects at least: self-hosted, linux, x64, modnet-runner
+RUNNER_LABELS="self-hosted,linux,x64,modnet-runner"
+
+# Working directory for jobs
+RUNNER_WORK_DIR="_work"
+
+# Install directory for runner binaries (absolute)
+RUNNER_INSTALL_DIR="/opt/github/modsdk-runner"
+
+# System user to run the runner (will be created if missing). Must have docker group if you need Docker.
+RUNNER_USER="githubrunner"
+
+# Registration token for this repo. Leave empty to auto-generate using a PAT or gh cli.
+RUNNER_REG_TOKEN=""
+
+# GitHub Personal Access Token (with repo:admin or admin:org) to create a registration token; or use gh CLI.
+GITHUB_PAT=""
+
+# Use GitHub CLI if available (true/false). If true and gh auth login done, script will prefer gh.
+USE_GH_CLI="true"
