@@ -6,8 +6,13 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "$0")"/.. && pwd)"
 cd "$REPO_ROOT"
 
+
+if ! command -v nix >/dev/null 2>&1; then
+  sudo apt-get install nix-bin
+fi
+
 if ! command -v direnv >/dev/null 2>&1; then
-  echo "[info] direnv not found. Install it for automatic shell loading: https://direnv.net/"
+  sudo apt-get install direnv
 fi
 
 if [ ! -f .envrc ]; then
