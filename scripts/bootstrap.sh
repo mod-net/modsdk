@@ -21,7 +21,7 @@ if [ ! -f flake.nix ]; then
   echo "[warn] flake.nix not found. Please commit the flake before bootstrapping."
 else
   echo "[info] Ensuring flake inputs are realized (this may download dependencies)..."
-  nix flake show >/dev/null || true
+  sudo nix flake --extra-experimental-features 'nix-command flakes' show>/dev/null || true
 fi
 
 # Initialize submodules if needed
